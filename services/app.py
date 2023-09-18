@@ -1,42 +1,37 @@
-from flask import Flask, jsonify
-from flask_restful import Resource, Api
-from flasgger import Swagger
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
-api = Api(app)
 
-# Configure Swagger UI
-swagger = Swagger(app)
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:5500"}})
 
-# Define a sample API resource
-class ExternalApi(Resource):
-    def get(self):
-        """
-        Get data from an external API.
 
-        This endpoint retrieves data from an external API.
+# Replace this with your authentication logic
+def authenticate(username, password):
+    # Implement your authentication logic here
+    # Return True if authentication is successful, False otherwise
+    return username == 'admin' and password == 'pass'
 
-        ---
-        responses:
-          200:
-            description: Data retrieved successfully.
-          500:
-            description: Internal Server Error.
-        """
-        try:
-            # Replace with your external API URL
-            external_api_url = "https://api.example.com/data"
-            
-            # Make a request to the external API
-            response = requests.get(external_api_url)
-            data = response.json()
+@app.after_request
+def add_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:5500'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+    response.headers['Access-Control-Allow-Credentials'] = 'true'  # If you need cookies to be sent cross-origin
+    return response
 
-            return jsonify(data), 200
-        except Exception as e:
-            return jsonify({"error": "Internal Server Error"}), 500
+@app.route('/api/authenticate', methods=['POST'])
+def login():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
 
-# Add the API resource to the Flask app
-api.add_resource(ExternalApi, '/external-api')
+    if authenticate(username, password):
+        # Authentication successful
+        return jsonify({'message': 'Authentication successful'})
+    else:
+        # Authentication failed
+        return jsonify({'message': 'Authentication failed'}), 401
 
 if __name__ == '__main__':
     app.run(debug=True)
