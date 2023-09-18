@@ -15,11 +15,16 @@
               border-color: white">
 
     <p style="margin-left: 2vh;">Authentication:</p>
-    <hr style="margin: 2vh;">
-    <div style="display: flex; flex-direction: column; align-items: center; margin: auto;">
-      <input placeholder="User Name" style="height: 3vh; width: 30vh;">
-      <input type="password" placeholder="Password" style="height: 3vh; width: 30vh; margin: 2vh;">
-      <button style="width: 20vh; height: 5vh; margin: 2vh;"> LOGIN </button>
-    </div>
+    <hr>
+    <form [formGroup]="authenticationForm" (ngSubmit)="onSubmit()">
+      <div style="display: flex; flex-direction: column; align-items: center; margin: auto;">
+        <input type="text" id="username" formControlName="username" placeholder="Enter your username" required style="height: 3vh; width: 30vh;">
+        <input type="password" id="password" formControlName="password" placeholder="Enter your password" required style="height: 3vh; width: 30vh; margin: 2vh;">
+        <button style="width: 20vh; height: 5vh; margin: 2vh;"> LOGIN </button>
+      </div>
+    </form>
+
   </div>
 </div>
+
+
