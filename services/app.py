@@ -4,6 +4,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:5500"}})
+import replicate
 
 
 # Replace this with your authentication logic
@@ -32,6 +33,27 @@ def login():
     else:
         # Authentication failed
         return jsonify({'message': 'Authentication failed'}), 401
+
+
+@app.route('/api/sendMessage', methods=['POST'])
+def getMessage():
+    output = ''
+    data = request.get_json()
+    message = data.get('message')
+    try:
+        result = replicate.run(
+        "meta/llama-2-70b-chat:2c1608e18606fad2812020dc541930f2d0495ce32eee50074220b87300bc16e1",
+        input={"prompt": message}
+        )
+        for word in result:
+            output+= word
+        output = 'Hello'
+        return jsonify({'message': output})
+    except Exception as e:
+        return e, 401
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
