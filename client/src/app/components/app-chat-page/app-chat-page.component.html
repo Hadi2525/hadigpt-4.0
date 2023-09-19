@@ -1,0 +1,10 @@
+<div style="display: flex; flex-direction: column;  height: 100vh;">
+  <textarea style="background-color:aliceblue; height: 60vh; width: 75%; margin: auto; color: black;"
+            [value]="gptMessage.message">
+  </textarea>
+  <form [formGroup]="chatForm" (ngSubmit)="onChatSubmit()"
+  style="width: 100%; height: 4.5vh; display: flex;  margin: auto; justify-content: center;">
+    <input style="width: 50%; " type="text" formControlName="message" placeholder="Send a Message"> <button style="width: 15vh;">SEND</button>
+
+  </form>
+</div>

@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormControl } from '@angular/forms';
-import { UserAuthentication } from 'src/app/models/authentication';
+import { Router } from '@angular/router';
+import { HttpCallService } from 'src/app/services/http-call.service';
 
 @Component({
   selector: 'app-app-auth',
@@ -15,19 +16,14 @@ export class AppAuthComponent {
     password: new FormControl(''),
   });
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,
+              private router: Router,
+              private callService: HttpCallService) {}
 
   onSubmit() {
     const formData = this.authenticationForm.value;
+    this.callService.onAuthSubmit(formData)
 
-    this.http.post('http://127.0.0.1:5000/api/authenticate', formData).subscribe({
-      next: (result: UserAuthentication) => {
-        console.log(`Authentication Success: ${result.message}`);
-      },
-      error: (err) => {
-        console.error(`An error occured. ${err}`);
-      }
-    })
   }
 
 
